@@ -1,0 +1,39 @@
+1.创建所需要的实体类。
+	1.1蛇类的实现
+	1.2实现食物类
+	1.3实现障碍物类
+	1.4自定义GamePanl.
+		继承Jpanel 实现paintComponent方法。自定义display方法初始化。
+		display中调用repaint方法重绘视图
+2.将各类中的方法用打印语句构造
+    2.1蛇 drawMe()画出自己 move()移动方法eatFood()吃食物changeDirction()改变方向
+    2.2食物 drawMe()画出自己 isEatenBySnake()被蛇吃掉
+    2.3障碍物drawMe()画出自己isB()碰撞实现
+3.定义Controller控制蛇的动作和窗口事件的发生
+	3.1自定义接口SnakeListener定义snakeMoved()方法
+    3.2Controller继承KeyAdaper(实现键盘事件的处理)实现SnakeListener接口(对蛇的行为进行控制)
+    3.3定义start()方法。在Snake中定义内部类SnakeDriver继承Thread。调用move()(重绘)方法使蛇移动
+    3.4在main方法中将组件组装在一起进行测试
+4.详细功能的实现
+	4.1snake用LinkedList<Point> body进行保存构造方法中实现蛇的图像绘制
+		在这里我们定义辅助类Global。定义格子的边长。定义横纵向各多少个格子
+		初始化init()时为body 添加节点
+	4.2让蛇移动
+		move()方法详细实现。
+		4.2.1 去掉尾巴removeLast()
+		4.2.2 加上脑袋。先得到头部的坐标位置并赋想x，y。
+		4.2.3 判断方向final int U ,D,L,R.
+		switch选择对应情况对x,y进行操作然后addFirst(new Point(x,y))
+	4.3剔除不合法的移动
+	   4.3.1左右的直接转换
+	   		在changeDirection中判断前后的Direction和是否为0
+	   4.3.2在同一线程中先后两次改变方向，既先按下正确的方向键，在move方法下次执行前再次按下反向方向键(→默认方向  一次线程中方向键↓←)
+	                    在Snake中定义两个方向变量。OldD,NewD.调用changeDirection时将NewD赋值为新方向，初始化时OldD为默认方式，
+	     	在move()的switch前将OldD,NewD.进行判断。合法就替换为新方向。
+	4.4食物的实现和吃食物的实现
+		4.4.1食物绘图实现使Food继承Point类。添加addFood方法。在Controller中初始化一个Point传给Food。随机生成Food
+			 然后drawMe中绘制食物
+		4.4.2 在蛇类中定义去到蛇头的方法。在Food的相应方法中比较蛇头坐标和食物坐标。
+		             成功吃掉的话蛇的长度+1，只需将该次Move()方法中去掉的尾部加回来即可
+		             所以removeLast时返回的对象用tail(Point)进行保存。Cotroller调用
+		     eatFood加回尾部。
